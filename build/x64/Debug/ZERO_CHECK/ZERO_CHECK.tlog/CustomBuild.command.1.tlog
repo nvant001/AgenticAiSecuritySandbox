@@ -1,0 +1,10 @@
+^C:\USERS\15714\DESKTOP\PROJECTS\AGENTICAISECURITYSANDBOX\BUILD\CMAKEFILES\F3F4004D6FB7CFB6DF6D18D74F4BBABE\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/15714/Desktop/Projects/AgenticAiSecuritySandbox -BC:/Users/15714/Desktop/Projects/AgenticAiSecuritySandbox/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/15714/Desktop/Projects/AgenticAiSecuritySandbox/build/AgenticAiSecuritySandbox.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
