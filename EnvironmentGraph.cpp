@@ -152,5 +152,5 @@ void EnvironmentGraph::add_node(const Node& node)
 
 
         }
-        return is_valid;
+        
     };
