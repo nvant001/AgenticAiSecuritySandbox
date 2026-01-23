@@ -104,3 +104,53 @@ void EnvironmentGraph::add_node(const Node& node)
         }
         return is_valid;
     };
+
+        void EnvironmentGraph::validate_graph(std::ostream& report_stream) 
+    {
+
+
+
+        bool is_valid = true;
+        const double epsilon = 1e-6;
+        //Iterate through our nodeRegistry for each [id, node] pair
+        for(const auto& [id, node] : nodeRegistry)
+        {
+            double weight_sum = 0.0;
+            //Check 2 things, edges in AL and Probability sums
+            if(adj_list.find(id) != adj_list.end()) //does our map contain our id?
+            {
+                                                //yes it does   
+                for(const auto& edge : adj_list.at(id)) //for each edge in the vector
+                {
+                    //we have the edge we need to check that the target_id for the node is valid
+                    if(nodeRegistry.find(edge.target_id) == nodeRegistry.end())
+                   {
+                        //this is meaning our node that our edge targets does not exist
+                        is_valid = false; //set our is_valid to false, we don't want to return here becuase we want a full audit of the entire graph
+                        report_stream << "Invalid Edge: Source Node " << id << " has an edge to non-existent Target Node " << edge.target_id << "\n";
+
+
+                   }
+                   //this means our node exists
+                   weight_sum += edge.weight;
+                }
+                //bayesian integrity check
+            }
+            if(node.is_terminal){
+                if(weight_sum > epsilon){
+                    report_stream << "Terminal Node " << id << " has a weight sum when it should not: " << weight_sum << "\n";
+                    is_valid = false;
+                }
+                }else if(std::abs(weight_sum-1.0) > epsilon){
+                    report_stream << "Node: " << id << " probabilities sum is off it is: " << weight_sum << std::endl;
+                    is_valid = false;
+                }
+            //no it doesnt we are out
+            //does every node included in edge exist? 
+            //go through edge and search for the node.
+
+
+
+        }
+        return is_valid;
+    };
