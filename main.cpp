@@ -2,9 +2,8 @@
 #include "EnvironmentGraph.h"
 #include "EnvironmentGraph.cpp"
 #include <cassert>
-int main()
-{
-EnvironmentGraph graph;
+void check_day2(){
+    EnvironmentGraph graph;
 
     // 1. Setup Nodes
     // ID 0: Unauthenticated (Start)
@@ -42,8 +41,69 @@ EnvironmentGraph graph;
     std::cout << "Agent with DB_ACCESS: Found " << actions_db.size() << " actions (Expected: 1)\n";
     assert(actions_db.size() == 1);
 
-    
+}
+void run_day2_checks() {
+    EnvironmentGraph graph;
 
+    // Build a simple 2-node path
+    graph.add_node({.is_terminal = false, .id = 0, .label = SystemState::UNAUTHENTICATED});
+    graph.add_node({.is_terminal = true,  .id = 1, .label = SystemState::USER_SESSION});
+
+    // 100% chance to move from 0 to 1
+    graph.add_edge(0, 1, AgentAction::INPUT_TEXT, 1.0, Perms::NONE);
+
+    // Run the audit
+    std::cout << "Starting Graph Audit...\n";
+    bool success = graph.validate_graph(std::cerr); 
+    
+    if (success) {
+        std::cout << ">>> DAY 2 FOUNDATION VERIFIED.\n";
+    } else {
+        std::cerr << ">>> DAY 2 FOUNDATION FAILED. CHECK LOGS.\n";
+    }
+}
+void run_diagnostic_suite() {
+    EnvironmentGraph graph;
+    std::cout << "=== Agentic-Shield: Day 2 Diagnostic Report ===\n";
+
+    // 1. Setup a "Broken" Graph to test the Reporter
+    graph.add_node({.is_terminal = false, .id = 0, .label = SystemState::UNAUTHENTICATED});
+    graph.add_node({.is_terminal = false, .id = 1, .label = SystemState::USER_SESSION});
+    // Note: Node 2 is NOT added to test "Ghost Target" detection
+    
+    // Create an edge with a bad sum (0.7 instead of 1.0) and a missing target
+    graph.add_edge(0, 1, AgentAction::INPUT_TEXT, 0.7, Perms::NONE); 
+    
+    // Create an edge to a non-existent Node 2
+    // We wrap this in a try-block because your add_edge now throws!
+    try {
+        graph.add_edge(0, 2, AgentAction::REQUEST_TOKEN, 0.3, Perms::USER);
+    } catch (const std::invalid_argument& e) {
+        std::cout << "[Expected Exception Caught]: " << e.what() << "\n";
+    }
+
+    // 2. Run the Overloaded Reporter
+    std::cout << "\n--- Triggering Full Audit ---\n";
+    graph.validate_graph(std::cerr); 
+
+    // 3. Setup a "Perfect" Graph to verify success
+    EnvironmentGraph valid_graph;
+    valid_graph.add_node({.is_terminal = false, .id = 10, .label = SystemState::UNAUTHENTICATED});
+    valid_graph.add_node({.is_terminal = true,  .id = 11, .label = SystemState::USER_SESSION});
+    valid_graph.add_edge(10, 11, AgentAction::INPUT_TEXT, 1.0, Perms::NONE);
+
+    std::cout << "\n--- Verifying Valid Path ---\n";
+    if (valid_graph.validate_graph()) {
+        std::cout << "SUCCESS: Validated clean graph transition (10 -> 11).\n";
+    } else {
+        std::cerr << "CRITICAL FAILURE: Validated graph returned false.\n";
+    }
+}
+int main()
+{
+    check_day2();
+    run_day2_checks();
+    run_diagnostic_suite();
 
     return 0;
 

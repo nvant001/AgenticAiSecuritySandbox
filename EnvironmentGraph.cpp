@@ -105,7 +105,7 @@ void EnvironmentGraph::add_node(const Node& node)
         return is_valid;
     };
 
-        void EnvironmentGraph::validate_graph(std::ostream& report_stream) 
+        bool EnvironmentGraph::validate_graph(std::ostream& report_stream) const
     {
 
 
@@ -152,5 +152,6 @@ void EnvironmentGraph::add_node(const Node& node)
 
 
         }
+        return is_valid;
         
     };

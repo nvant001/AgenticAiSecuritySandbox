@@ -19,5 +19,5 @@ class EnvironmentGraph{
     void add_edge(uint32_t source_id, uint32_t target_id, AgentAction action, double weight, uint64_t perms);
     std::vector<Edge> get_valid_actions(uint32_t node_id, uint64_t agent_permissions);
     bool validate_graph() const;
-    void validate_graph(std::ostream& report_stream);
+    bool validate_graph(std::ostream& report_stream) const;
 };
