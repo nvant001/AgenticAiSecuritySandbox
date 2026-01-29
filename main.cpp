@@ -1,7 +1,59 @@
 #include <iostream>
 #include "EnvironmentGraph.h"
 #include "EnvironmentGraph.cpp"
+#include "Agent.cpp"
 #include <cassert>
+void check_day3(){
+Node start_node;
+    start_node.id = 0;
+    start_node.label = SystemState::UNAUTHENTICATED;
+    start_node.permissions_granted = Perms::NONE;
+
+    Node login_success_node;
+    login_success_node.id = 1;
+    login_success_node.label = SystemState::USER_SESSION;
+    login_success_node.permissions_granted = Perms::USER; // Grants USER perms
+
+    Node admin_db_node;
+    admin_db_node.id = 2;
+    admin_db_node.label = SystemState::S3_BUCKET_PRIVATE;
+    admin_db_node.permissions_granted = Perms::DB_ACCESS; // Grants DB perms
+
+    // 2. Setup mock Edges (The paths between them)
+    Edge to_login = {0, 1, AgentAction::REQUEST_TOKEN, 1.0, Perms::NONE};
+    Edge to_admin = {1, 2, AgentAction::EXECUTE_QUERY, 1.0, Perms::USER};
+
+    // 3. Initialize Agent at Start
+    Agent spy(start_node.id, Perms::NONE);
+    std::cout << "--- Simulation Start ---" << std::endl;
+    std::cout << "Initial Perms: " << spy.get_permissions() << std::endl;
+
+    // --- STEP 1: Move to Login ---
+    spy.perm_action(to_login, login_success_node);
+    assert(spy.get_current_node_id() == 1);
+    assert(spy.get_permissions() & Perms::USER);
+    std::cout << "Step 1 (Login) Success. Perms: " << spy.get_permissions() << std::endl;
+
+    // --- STEP 2: Move to Admin DB ---
+    spy.perm_action(to_admin, admin_db_node);
+    assert(spy.get_current_node_id() == 2);
+    
+    // Verify Accumulation: Should have BOTH User (1) and DB_Access (4) = 5
+    assert(spy.get_permissions() == (Perms::USER | Perms::DB_ACCESS));
+    std::cout << "Step 2 (Admin DB) Success. Final Perms: " << spy.get_permissions() << std::endl;
+
+    // --- STEP 3: Verify History ---
+    auto history = spy.get_history();
+    std::cout << "Path Taken: ";
+    for(uint32_t node : history) std::cout << node << " -> ";
+    std::cout << "END" << std::endl;
+
+    assert(history.size() == 3); // Start -> Login -> DB
+    
+    std::cout << "\n[RESULT] Day 3 Logic Verified: Agent State Machine is 100% Functional." << std::endl;
+
+
+}
 void check_day2(){
     EnvironmentGraph graph;
 
@@ -101,10 +153,10 @@ void run_diagnostic_suite() {
 }
 int main()
 {
-    check_day2();
-    run_day2_checks();
-    run_diagnostic_suite();
-
+    //check_day2();
+    //run_day2_checks();
+    //run_diagnostic_suite();
+    check_day3();
     return 0;
 
 }

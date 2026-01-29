@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 
 //Permision constant bitmask slots
@@ -29,6 +30,7 @@ struct Node {
     bool is_terminal = false;
     uint32_t id = 0;
     SystemState label = SystemState::UNAUTHENTICATED;
+    uint64_t permissions_granted = Perms::NONE;
     
 };
 
