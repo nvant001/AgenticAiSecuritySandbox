@@ -1,7 +1,7 @@
-//main.cpp
+//GeminiChecks.cpp
 #include <iostream>
 #include "EnvironmentGraph.h"
-#include "Agent.h"
+#include "GeminiChecks.h"
 #include <cassert>
 #include <iomanip>
 #include <random>
@@ -221,16 +221,4 @@ void check_day4() {
     assert(breach_pct < 10.0 && "Error: Breach rate too high. Probability logic skewed.");
     
     std::cout << "Day 4 Status: PASSED\n";
-}
-int main()
-{
-    std:: random_device rd;
-    std::mt19937 gen(rd());
-    //check_day2();
-    //run_day2_checks();
-    //run_diagnostic_suite();
-    //check_day3();
-    check_day4();
-    return 0;
-
 }
