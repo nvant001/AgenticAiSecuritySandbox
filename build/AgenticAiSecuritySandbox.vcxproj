@@ -410,6 +410,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="C:\Users\15714\Desktop\Projects\AgenticAiSecuritySandbox\main.cpp" />
+    <ClCompile Include="C:\Users\15714\Desktop\Projects\AgenticAiSecuritySandbox\EnvironmentGraph.cpp" />
+    <ClCompile Include="C:\Users\15714\Desktop\Projects\AgenticAiSecuritySandbox\Agent.cpp" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

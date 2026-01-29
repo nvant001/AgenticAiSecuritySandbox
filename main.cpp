@@ -1,7 +1,7 @@
+//main.cpp
 #include <iostream>
 #include "EnvironmentGraph.h"
-#include "EnvironmentGraph.cpp"
-#include "Agent.cpp"
+#include "Agent.h"
 #include <cassert>
 #include <iomanip>
 #include <random>
@@ -230,7 +230,7 @@ int main()
     //run_day2_checks();
     //run_diagnostic_suite();
     //check_day3();
-    //day4_check();
+    day4_check();
     return 0;
 
 }
