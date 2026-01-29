@@ -1,4 +1,7 @@
-#pragma once
+//EnvironmentGraph.h
+#ifndef ENVIRONMENTGRAPH_H
+#define ENVIRONMENTGRAPH_H
+
 #include "schema.h"
 #include <unordered_map>
 #include <vector>
@@ -23,3 +26,5 @@ class EnvironmentGraph{
     bool validate_graph(std::ostream& report_stream) const;
     std::optional<Edge> get_stochastic_action(uint32_t node_id, uint64_t agent_permissions, std::mt19937& gen);
 };
+
+#endif // ENVIRONMENTGRAPH_H

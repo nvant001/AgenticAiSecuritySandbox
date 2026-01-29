@@ -4,6 +4,12 @@
     <ClCompile Include="C:\Users\15714\Desktop\Projects\AgenticAiSecuritySandbox\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\15714\Desktop\Projects\AgenticAiSecuritySandbox\EnvironmentGraph.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\15714\Desktop\Projects\AgenticAiSecuritySandbox\Agent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="C:\Users\15714\Desktop\Projects\AgenticAiSecuritySandbox\CMakeLists.txt" />

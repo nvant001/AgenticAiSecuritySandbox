@@ -1,4 +1,6 @@
-#pragma once
+//schema.h
+#ifndef SCHEMA_H
+#define SCHEMA_H
 #include <iostream>
 
 //Permision constant bitmask slots
@@ -43,3 +45,5 @@ struct Edge{
     uint64_t required_permissions = Perms::NONE;
 };
 
+
+#endif // SCHEMA_H
