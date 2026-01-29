@@ -106,6 +106,7 @@ void EnvironmentGraph::add_node(const Node& node)
     };
 
         bool EnvironmentGraph::validate_graph(std::ostream& report_stream) const
+
     {
 
 
@@ -155,3 +156,26 @@ void EnvironmentGraph::add_node(const Node& node)
         return is_valid;
         
     };
+//https://en.cppreference.com/w/cpp/numeric/random/discrete_distribution.html
+    std::optional<Edge> EnvironmentGraph::get_stochastic_action(uint32_t node_id, uint64_t agent_permissions, std::mt19937& gen){
+        std::vector<Edge> valid_edges = get_valid_actions(node_id,agent_permissions);
+        //check to make sure valid_edges isn't empty
+        if(valid_edges.empty()) {return std::nullopt; }
+
+        //iterates through valid_edges to create a weight vector, the index corresponds with the position of the weight
+        //to the edge location in the vector, important for the distribution finding. 
+        std::vector<double> edge_weights = {};
+        for(const auto& edge : valid_edges)
+        {
+            edge_weights.push_back(edge.weight);
+        }
+        
+
+    std::discrete_distribution<size_t> distribution(edge_weights.begin(), edge_weights.end());
+    //finds the index from the distribution
+    size_t selected_weight = distribution(gen);
+  
+
+    //returns the edge from the vector using the index we found in the distribution
+    return valid_edges[selected_weight];
+    }   

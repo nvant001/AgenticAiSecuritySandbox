@@ -3,6 +3,8 @@
 #include "EnvironmentGraph.cpp"
 #include "Agent.cpp"
 #include <cassert>
+#include <iomanip>
+#include <random>
 void check_day3(){
 Node start_node;
     start_node.id = 0;
@@ -151,12 +153,84 @@ void run_diagnostic_suite() {
         std::cerr << "CRITICAL FAILURE: Validated graph returned false.\n";
     }
 }
+void day4_check() {
+    std::cout << "--- Starting Project Agentic-Shield: Day 4 Smoke Test ---\n";
+
+    // 1. Setup Environment
+    EnvironmentGraph graph;
+    std::mt19937 gen(1337); // Fixed seed for reproducible manager audit
+
+    // Define Nodes
+    Node start_node{false, 0, SystemState::UNAUTHENTICATED, Perms::NONE};
+    Node user_node{true, 1, SystemState::USER_SESSION, Perms::USER};
+    Node db_node{true, 2, SystemState::ROOT_ADMIN, Perms::DB_ACCESS}; // Terminal Breach
+
+    graph.add_node(start_node);
+    graph.add_node(user_node);
+    graph.add_node(db_node);
+
+    // Define Bayesian Weights: 95% Normal Path, 5% Anomalous Path
+    // Edge 0 -> 1 (Normal)
+    graph.add_edge(0, 1, AgentAction::INPUT_TEXT, 0.95, Perms::NONE);
+    // Edge 0 -> 2 (Anomalous Breach - bypass)
+    graph.add_edge(0, 2, AgentAction::BYPASS_FILTER, 0.05, Perms::NONE);
+
+    // 2. Validate Graph Integrity
+    if (!graph.validate_graph(std::cerr)) {
+        std::cerr << "Graph validation failed! Check your weights.\n";
+        return;
+    }
+
+    // 3. Stochastic Simulation (1,000 Trials)
+    int normal_count = 0;
+    int breach_count = 0;
+    const int total_trials = 1000;
+
+    for (int i = 0; i < total_trials; ++i) {
+        Agent agent(0, Perms::NONE);
+
+        // Get the stochastic action from the graph
+        auto action = graph.get_stochastic_action(agent.get_current_node_id(), agent.get_permissions(), gen);
+
+        if (action.has_value()) {
+            // Retrieve the target node object for the agent to consume
+            const Node& target = graph.get_node(action->target_id);
+            
+            // Execute transition
+            if (agent.execute_transition(*action, target)) {
+                uint32_t final_id = agent.get_current_node_id();
+                if (final_id == 1) normal_count++;
+                else if (final_id == 2) breach_count++;
+            }
+        }
+    }
+
+    // 4. Report Results
+    double breach_pct = (static_cast<double>(breach_count) / total_trials) * 100.0;
+    
+    std::cout << "\nResults after " << total_trials << " trials:\n";
+    std::cout << "--------------------------------------\n";
+    std::cout << "Normal Paths (Node 1): " << normal_count << "\n";
+    std::cout << "Breach Paths (Node 2): " << breach_count << "\n";
+    std::cout << "Actual Breach Rate:    " << std::fixed << std::setprecision(2) << breach_pct << "%\n";
+    std::cout << "Target Breach Rate:    5.00%\n";
+    std::cout << "--------------------------------------\n";
+
+    // 5. Final Audit Logic Check
+    assert(breach_count > 0 && "Error: Breach path was never taken. Check random distribution.");
+    assert(breach_pct < 10.0 && "Error: Breach rate too high. Probability logic skewed.");
+    
+    std::cout << "Day 4 Status: PASSED\n";
+}
 int main()
 {
+    std:: random_device rd;
+    std::mt19937 gen(rd());
     //check_day2();
     //run_day2_checks();
     //run_diagnostic_suite();
-    check_day3();
+    //check_day3();
+    //day4_check();
     return 0;
 
 }
